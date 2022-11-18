@@ -196,30 +196,3 @@ set(AM_CPPFLAGS
 # if BUILD_WIN32
 # COMMON_DEPS += collectd.exe
 # endif
-
-# # Link to these libraries..
-# COMMON_LIBS = $(PTHREAD_LIBS)
-# if BUILD_WIN32
-# COMMON_LIBS += -lws2_32
-# endif
-# if BUILD_WITH_GNULIB
-# COMMON_LIBS += -lgnu
-# endif
-# if BUILD_WITH_CAPABILITY
-# COMMON_LIBS += -lcap
-# endif
-# if BUILD_WITH_LIBRT
-# COMMON_LIBS += -lrt
-# endif
-# if BUILD_WITH_LIBPOSIX4
-# COMMON_LIBS += -lposix4
-# endif
-# if BUILD_WITH_LIBSOCKET
-# COMMON_LIBS += -lsocket
-# endif
-# if BUILD_WITH_LIBKSTAT
-# COMMON_LIBS += -lkstat
-# endif
-# if BUILD_WITH_LIBDEVINFO
-# COMMON_LIBS += -ldevinfo
-# endif
