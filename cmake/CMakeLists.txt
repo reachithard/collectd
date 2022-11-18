@@ -15,13 +15,14 @@ set(BASE_DIR ${CMAKE_SOURCE_DIR}/../)
 # features
 include(features/collectd_make_feature.cmake)
 include(features/environment.cmake)
+include(utils/intf.cmake)
 
 message("COMMON_LIBS:${COMMON_LIBS}")
 
 # object end
 ADD_LIBRARY(COMMON_INTER INTERFACE)
 target_link_libraries(COMMON_INTER   INTERFACE
-                                    pthead
+                                    pthread
                                     $<$<CONFIG:WIN32>:ws2_32>
                                     $<$<CONFIG:BUILD_WITH_GNULIB>:gnu>
                                     $<$<CONFIG:BUILD_WITH_CAPABILITY>:cap>
@@ -33,17 +34,22 @@ target_link_libraries(COMMON_INTER   INTERFACE
 
 # object begin
 add_library(avltree OBJECT ${BASE_DIR}/src/utils/avltree/avltree.c)
+target_link_libraries(avltree PRIVATE intf)
 
 add_library(common OBJECT ${BASE_DIR}/src/utils/common/common.c)
-target_link_libraries(common PRIVATE COMMON_INTER)
+target_link_libraries(common PRIVATE COMMON_INTER intf)
 
 add_library(heap OBJECT ${BASE_DIR}/src/utils/heap/heap.c)
+target_link_libraries(heap PRIVATE intf)
 
 add_library(ignorelist OBJECT ${BASE_DIR}/src/utils/ignorelist/ignorelist.c)
+target_link_libraries(ignorelist PRIVATE intf)
 
 add_library(llist OBJECT ${BASE_DIR}/src/daemon/utils_llist.c)
+target_link_libraries(llist PRIVATE intf)
 
 add_library(metadata OBJECT ${BASE_DIR}/src/utils/metadata/meta_data.c)
+target_link_libraries(metadata PRIVATE intf)
 
 add_library(plugin_mock OBJECT  ${BASE_DIR}/src/daemon/plugin_mock.c 
                                 ${BASE_DIR}/src/daemon/utils_cache_mock.c
@@ -52,10 +58,13 @@ add_library(plugin_mock OBJECT  ${BASE_DIR}/src/daemon/plugin_mock.c
                                 ${BASE_DIR}/src/daemon/utils_time.c
                                 ${BASE_DIR}/src/daemon/utils_time.h)
 target_link_libraries(plugin_mock PRIVATE common ignorelist COMMON_INTER)
+target_link_libraries(plugin_mock PRIVATE intf)
 
 add_library(format_influxdb OBJECT ${BASE_DIR}/src/utils/format_influxdb/format_influxdb.c)
+target_link_libraries(format_influxdb PRIVATE intf)
 
 add_library(format_graphite OBJECT ${BASE_DIR}/src/utils/format_graphite/format_graphite.c)
+target_link_libraries(format_graphite PRIVATE intf)
 
 find_package(BISON)
 find_package(FLEX)
@@ -69,7 +78,7 @@ add_library(oconfig OBJECT
     ${BISON_OCONFIG_PARSER_OUTPUTS}
     ${FLEX_OCONFIG_SCANNER_OUTPUTS}
  )
- target_link_libraries(oconfig PRIVATE ${FLEX_LIBRARIES})
+ target_link_libraries(oconfig PRIVATE ${FLEX_LIBRARIES} intf)
 
 set(collectd_SOURCES
 	${BASE_DIR}/src/daemon/cmd.h
@@ -101,7 +110,8 @@ set(collectd_SOURCES
 	${BASE_DIR}/src/daemon/utils_threshold.h)
 
 add_executable(collectd WIN32 MACOSX_BUNDLE)
-target_link_libraries(collectd PRIVATE avltree comm heap llist oconfig m dl COMMON_INTER)
+target_link_libraries(collectd PRIVATE avltree common heap llist oconfig m dl COMMON_INTER intf)
+target_sources(collectd PRIVATE ${collectd_SOURCES})
 if (WIN32)
 target_sources(collectd PRIVATE ${BASE_DIR}/src/daemon/cmd_windows.c)
 target_link_options(collectd -ldl -Wl,--out-implib,libcollectd.a)
