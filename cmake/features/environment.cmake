@@ -1,0 +1,13 @@
+include(CheckIncludeFile)
+include(CheckIncludeFileCXX)
+include(CheckTypeSize)
+include(CheckStructHasMember)
+include(CheckSymbolExists)
+include(CheckCXXSymbolExists)
+
+
+CHECK_INCLUDE_FILE(amqp.h HAVE_AMQP_H)
+CHECK_STRUCT_HAS_MEMBER(amqp_rpc_reply_t library_errno amqp.h HAVE_AMQP_RPC_REPLY_T_LIBRARY_ERRNO LANGUAGE C)
+CHECK_INCLUDE_FILE(amqp_socket.h HAVE_AMQP_SOCKET_H)
+check_symbol_exists(amqp_tcp_socket_new amqp_socket.h HAVE_AMQP_TCP_SOCKET)
+CHECK_INCLUDE_FILE(amqp_socket.h HAVE_AMQP_TCP_SOCKET_H)
