@@ -1,3 +1,6 @@
 [submodule "gnulib"]
 	path = gnulib
 	url = git://git.savannah.gnu.org/gnulib.git
+[submodule "cmake/capture"]
+	path = cmake/capture
+	url = git@github.com:reachithard/capture.git

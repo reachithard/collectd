@@ -137,6 +137,15 @@ target_link_libraries(mount PRIVATE intf)
 # todo bind
 # todo buddyinfo
 # todo capabilities
+
+# capture and it dependence
+set(BUILD_PLUGIN_CAPTURE true)
+build_plugin(capture ${BASE_DIR}/src/capture.c)
+target_link_directories(capture PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/capture/output/lib ${CMAKE_CURRENT_SOURCE_DIR}/capture/output/lib64)
+target_link_libraries(capture PRIVATE capture_deps pcap)
+message("get include dir:${CMAKE_CURRENT_SOURCE_DIR}/capture/src/export")
+target_include_directories(capture PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/capture/src/export)
+
 # todo ceph
 # todo cgroups
 # todo chrony

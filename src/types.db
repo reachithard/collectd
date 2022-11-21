@@ -43,6 +43,8 @@ cookies                 value:DERIVE:0:U
 count                   value:GAUGE:0:U
 counter                 value:COUNTER:U:U
 cpu                     value:DERIVE:0:U
+pid                     value:GAUGE:0:U
+capture                 uid:GAUGE:0:U, gid:GAUGE:0:U, fdCnt:GAUGE:0:U, memory:GAUGE:0:U, cpuPercent:GAUGE:0:U, memPercent:GAUGE:0:U, ioRead:GAUGE:0:U, ioWrite:GAUGE:0:U, recv:GAUGE:0:U, send:GAUGE:0:U
 cpu_affinity            value:GAUGE:0:1
 cpufreq                 value:GAUGE:0:U
 current                 value:GAUGE:U:U
