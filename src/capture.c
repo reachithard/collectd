@@ -14,23 +14,8 @@ static void Process(enum CaptureAction action, const Process_t *processes,
     INFO("remove pid:%d", processes[0].pid);
   } else {
     for (uint32_t idx = 0; idx < tmp; idx++) {
-      INFO("get pid:%d", processes[idx].pid);
-      //   std::cout << "name:" << processes[idx].name
-      //             << " cmdline:" << processes[idx].cmdline
-      //             << " user:" << processes[idx].user
-      //             << " group:" << processes[idx].group
-      //             << " pid:" << processes[idx].pid
-      //             << " uid:" << processes[idx].uid
-      //             << " gid:" << processes[idx].gid
-      //             << " fdCnt:" << processes[idx].fdCnt
-      //             << " memory:" << processes[idx].memory
-      //             << " cpuPercent:" << processes[idx].cpuPercent
-      //             << " memPercent:" << processes[idx].memPercent
-      //             << " ioRead:" << processes[idx].ioRead
-      //             << " ioWrite:" << processes[idx].ioWrite
-      //             << " recv:" << processes[idx].recv
-      //             << " send:" << processes[idx].send;
-      //   std::cout << std::endl;
+      INFO("get pid:%d, recv:%d, send:%d", processes[idx].pid,
+           processes[idx].recv, processes[idx].send);
       value_list_t vl = VALUE_LIST_INIT;
 
       value_t values[] = {
@@ -49,9 +34,8 @@ static void Process(enum CaptureAction action, const Process_t *processes,
       char buffer[DATA_MAX_NAME_LEN] = "";
       vl.values = values;
       vl.values_len = STATIC_ARRAY_SIZE(values);
-      sstrncpy(vl.host, processes[idx].name, sizeof(vl.host));
-      sstrncpy(vl.plugin, "capture", sizeof(vl.plugin));
       snprintf(buffer, DATA_MAX_NAME_LEN, "%d", processes[idx].pid);
+      sstrncpy(vl.plugin, "capture", sizeof(vl.plugin));
       sstrncpy(vl.plugin_instance, buffer, sizeof(vl.plugin));
       sstrncpy(vl.type, "capture", sizeof(vl.type));
       sstrncpy(vl.type_instance, processes[idx].user, sizeof(vl.type_instance));
@@ -62,11 +46,10 @@ static void Process(enum CaptureAction action, const Process_t *processes,
       v2.values = &val;
       v2.values_len = 1;
 
-      sstrncpy(v2.host, processes[idx].name, sizeof(v2.host));
       sstrncpy(v2.plugin, "capture", sizeof(v2.plugin));
-      sstrncpy(v2.plugin_instance, "pid", sizeof(v2.plugin));
+      sstrncpy(v2.plugin_instance, buffer, sizeof(v2.plugin));
       sstrncpy(v2.type, "pid", sizeof(v2.type));
-      sstrncpy(v2.type_instance, processes[idx].user, sizeof(v2.type_instance));
+      sstrncpy(v2.type_instance, processes[idx].name, sizeof(v2.type_instance));
       plugin_dispatch_values(&v2);
     }
   }
